@@ -16,9 +16,22 @@ DATAFILE = "beatles-diskography.csv"
 def parse_file(datafile):
     data = []
     with open(datafile, "rb") as f:
-        for line in f:
-            print line
+		# Get header values
+		header = f.readline().split(",")
+		counter = 0
+		for line in f:
+			# Get only the first ten items
+			if counter == 10:
+				break
 
+			fields = line.split(",")
+			# For each item, create a dictionary where the key is the header title of the field, and the value is the value of that field in the item
+			entry = {}
+			for i, value in enumerate(fields):
+				entry[header[i].strip()] = value.strip()
+
+			data.append(entry)
+			counter += 1
     return data
 
 
