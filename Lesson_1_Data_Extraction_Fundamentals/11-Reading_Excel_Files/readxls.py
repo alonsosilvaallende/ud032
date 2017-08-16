@@ -2,22 +2,23 @@
 """
 Your task is as follows:
 - read the provided Excel file
-- find and return the min and max values for the COAST region
+- find and return the min, max, and average values for the COAST region
 - find and return the time value for the min and max entries
 - the time values should be returned as Python tuples
 
 Please see the test function for the expected return format
+
 """
 
 import xlrd
-from zipfile import ZipFile
+import numpy as np
+
+# from zipfile import ZipFile
 datafile = "2013_ERCOT_Hourly_Load_Data.xls"
 
-
-def open_zip(datafile):
-    with ZipFile('{0}.zip'.format(datafile), 'r') as myzip:
-        myzip.extractall()
-
+# def open_zip(datafile):
+#     with ZipFile('{0}.zip'.format(datafile), 'r') as myzip:
+#         myzip.extractall()
 
 def parse_file(datafile):
     workbook = xlrd.open_workbook(datafile)
@@ -47,18 +48,28 @@ def parse_file(datafile):
     # print xlrd.xldate_as_tuple(exceltime, 0)
     
     
+    column = sheet.col_values(1, start_rowx=1, end_rowx=range(sheet.nrows))
+
+    arg_max = np.argmax(column) + 1
+    maxtime = sheet.cell_value(arg_max,0)
+
+    arg_min = np.argmin(column) + 1
+    mintime = sheet.cell_value(arg_min,0)
+    xlrd.xldate_as_tuple (arg_min,0)
+
     data = {
-            'maxtime': (0, 0, 0, 0, 0, 0),
-            'maxvalue': 0,
-            'mintime': (0, 0, 0, 0, 0, 0),
-            'minvalue': 0,
-            'avgcoast': 0
+            'maxtime': xlrd.xldate_as_tuple(maxtime, 0),
+            'maxvalue': sheet.cell_value(arg_max,1),
+            'mintime': xlrd.xldate_as_tuple(mintime, 0),
+            'minvalue': sheet.cell_value(arg_min,1),
+            'avgcoast': np.mean(column)
     }
     return data
 
 
+
 def test():
-    open_zip(datafile)
+#    open_zip(datafile)
     data = parse_file(datafile)
 
     assert data['maxtime'] == (2013, 8, 13, 17, 0, 0)
