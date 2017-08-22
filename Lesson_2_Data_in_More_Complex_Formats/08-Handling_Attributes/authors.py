@@ -26,7 +26,12 @@ def get_authors(root):
         }
 
         # YOUR CODE HERE
-
+        data["fnm"] = author.find('fnm').text
+        data["snm"] = author.find('snm').text
+        data["email"] = author.find('email').text
+        insr = author.findall('insr')
+        for institution in insr:
+            data["insr"].append(institution.attrib['iid'])
         authors.append(data)
 
     return authors
@@ -41,7 +46,6 @@ def test():
                 {'insr': ['I3', 'I5'], 'fnm': 'Gideon', 'snm': 'Mann', 'email': 'gideon.mann.md@gmail.com'},
                 {'insr': ['I6'], 'fnm': 'Barnaby', 'snm': 'Clarck', 'email': 'barns.nz@gmail.com'},
                 {'insr': ['I7'], 'fnm': 'Eugene', 'snm': 'Kots', 'email': 'eukots@gmail.com'}]
-
     root = get_root(article_file)
     data = get_authors(root)
 
